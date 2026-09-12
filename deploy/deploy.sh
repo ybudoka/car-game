@@ -28,7 +28,7 @@ RELEASES="$BASE/releases"
 HORODATAGE="$(date +%Y%m%d%H%M%S)"
 CIBLE="$RELEASES/$HORODATAGE"
 SERVICE=auto-gestiondojo
-PORT=8004
+PORT=8005
 
 echo "==> Recuperation de la branche $BRANCHE"
 git -C "$DEPOT" fetch --prune origin "$BRANCHE"
@@ -51,7 +51,7 @@ ANCIENNE="$(readlink -f "$BASE/current" || true)"
 ln -sfn "$CIBLE" "$BASE/current"
 sudo systemctl restart "$SERVICE"
 
-# ⚠️ Ce curl vise gunicorn EN DIRECT (port 8004) : nginx renvoie 444 a tout
+# ⚠️ Ce curl vise gunicorn EN DIRECT (port 8005) : nginx renvoie 444 a tout
 # User-Agent contenant « curl » (regle anti-robots du serveur). Un healthcheck
 # qui passerait par nginx ou Caddy verrait une panne sur un site sain.
 echo "==> Verification (/sante)"

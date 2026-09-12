@@ -39,4 +39,4 @@ sudo systemctl reload caddy
 ## 3. nginx
 
 Voir `deploy/nginx/auto-gestiondojo.conf.example` : c'est lui qui envoie
-l'hote `auto.gestiondojo.ca` vers le gunicorn du jeu (port 8004).
+l'hote `auto.gestiondojo.ca` vers le gunicorn du jeu (port 8005).

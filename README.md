@@ -65,7 +65,7 @@ livrer un niveau injouable sans le savoir.
 ## Mise en ligne
 
 Voir **[deploy/README.md](deploy/README.md)** : même recette que
-`jeux.gestiondojo.ca` (gunicorn sur le port 8004, service systemd
+`jeux.gestiondojo.ca` (gunicorn sur le port 8005, service systemd
 `auto-gestiondojo`, vhost nginx, hôte dans Caddy, modèle « releases + current »).
 
 ## Structure

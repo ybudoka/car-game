@@ -4,13 +4,13 @@ Meme recette que le site de jeux (`jeux.gestiondojo.ca`) : Flask sous
 gunicorn, service systemd, vhost nginx, hote declare dans Caddy.
 
 ```
-Internet :443 → Caddy (TLS) → nginx 127.0.0.1:8080 → gunicorn 127.0.0.1:8004
+Internet :443 → Caddy (TLS) → nginx 127.0.0.1:8080 → gunicorn 127.0.0.1:8005
 ```
 
 | | |
 |---|---|
 | Sous-domaine | `auto.gestiondojo.ca` |
-| Port gunicorn | **8004** (8003 = site de jeux, ne pas reutiliser) |
+| Port gunicorn | **8005** (8003 = site de jeux, 8004 = KidTube : ne pas reutiliser) |
 | Service | `auto-gestiondojo` |
 | Dossier | `/srv/auto` |
 | Utilisateur du deploiement | `dojoadmin` |
