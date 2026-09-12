@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>{% block titre %}{{ SITE_NAME }}{% endblock %}</title>
+  <meta name="description" content="{{ SITE_TAGLINE }}">
+  <meta name="theme-color" content="#1f8a3a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="{{ SITE_NAME }}">
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}?v={{ version }}">
+</head>
+<body>
+  {% block corps %}{% endblock %}
+  <footer class="pied">
+    <span>{{ SITE_NAME }} v{{ version }}</span>
+    <span>© {{ annee }} {{ SITE_AUTEUR }}</span>
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+# Un push qui en remplace un autre annule la CI du precedent. Rien ne se met
+# en ligne d'ici (le deploiement se fait a la main sur le serveur), donc aucune
+# execution annulee ne peut laisser un serveur entre deux versions.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Installer les dependances
+        run: uv sync --all-groups
+
+      # Le deploiement installe depuis requirements.txt et la CI depuis
+      # pyproject.toml : une divergence ferait tester autre chose que la prod.
+      - name: Verifier la synchronisation requirements.txt / pyproject.toml
+        run: uv run python scripts/verifier_dependances.py
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Tests
+        run: uv run pytest -q

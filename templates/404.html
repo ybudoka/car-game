@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block titre %}Page introuvable — {{ SITE_NAME }}{% endblock %}
+{% block corps %}
+<main class="jeu">
+  <section class="voile voile--accueil voile--statique">
+    <h1 class="titre">Mauvaise sortie!</h1>
+    <p class="sous-titre">Cette page n'existe pas.</p>
+    <div class="boutons">
+      <a class="bouton bouton--principal" href="{{ url_for('jeu.accueil') }}">Retour au jeu</a>
+    </div>
+  </section>
+</main>
+{% endblock %}

@@ -1,0 +1,53 @@
+# Auto Évasion derriere Caddy (:8080). Meme patron que jeux-gestiondojo.conf.
+#
+# Chaine complete :
+#   Internet :443 → Caddy (TLS) → nginx 127.0.0.1:8080 → gunicorn 127.0.0.1:8004
+#
+# Installation :
+#   sudo install -m 644 <ce fichier> /etc/nginx/sites-available/auto-gestiondojo.conf
+#   sudo ln -sfn /etc/nginx/sites-available/auto-gestiondojo.conf /etc/nginx/sites-enabled/
+#   sudo nginx -t && sudo systemctl reload nginx
+#
+# ⚠️ Ce vhost NOMME est indispensable : le serveur route par un catch-all
+# (`server_name _`) qui envoie tout ce qu'il ne connait pas vers gestion-dojo.
+# Sans ce fichier, `auto.gestiondojo.ca` afficherait le site du dojo — avec un
+# code 200, donc sans rien qui alerte.
+
+server {
+    listen 127.0.0.1:8080;
+    server_name auto.gestiondojo.ca;
+
+    client_max_body_size 64k;
+
+    # Caddy est le proxy de confiance : vraie IP cliente via X-Forwarded-For.
+    set_real_ip_from 127.0.0.1;
+    real_ip_header X-Forwarded-For;
+
+    include /etc/nginx/snippets/gestion-dojo-security-server.conf;
+
+    # ⚠️ `gzip_proxied any` est obligatoire : ce vhost ne recoit QUE des
+    # requetes venues de Caddy, et la valeur par defaut (`off`) les exclut.
+    gzip on;
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_min_length 1024;
+    gzip_types text/css application/javascript text/javascript application/json image/svg+xml;
+
+    # nginx sert les fichiers statiques en direct. Les URL portent `?v=<version>`
+    # depuis les gabarits, donc un cache long est sans risque.
+    location /static/ {
+        alias /srv/auto/current/static/;
+        access_log off;
+        expires 7d;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:8004;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 60s;
+        include /etc/nginx/snippets/gestion-dojo-proxy-security.conf;
+    }
+}

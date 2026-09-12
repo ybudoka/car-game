@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block corps %}
+<main class="jeu" id="jeu"
+      data-nb-niveaux="{{ nb_niveaux }}"
+      data-url-niveaux="{{ url_for('jeu.api_niveaux') }}"
+      data-url-voitures="{{ url_for('jeu.api_voitures') }}"
+      data-url-scores="{{ url_for('jeu.api_scores') }}">
+
+  <div class="scene">
+    <canvas id="toile" width="960" height="540" aria-label="Zone de jeu"></canvas>
+
+    {# Le HUD est du HTML par-dessus le canvas : plus net qu'un texte dessine,
+       et lisible par un lecteur d'ecran. #}
+    <div class="hud" aria-live="polite">
+      <div class="hud__auto">
+        <span id="hud-auto" class="hud__nom">Rouge</span>
+        <span id="hud-rarete" class="hud__rarete rarete--commune">Commune</span>
+      </div>
+      <div class="hud__centre">
+        <span id="hud-bouclier" class="hud__bouclier" hidden>🛡️ Bouclier</span>
+      </div>
+      <div class="hud__droite">
+        <span id="hud-points" class="hud__points">0</span>
+        <span id="hud-niveau" class="hud__niveau">1 / {{ nb_niveaux }}</span>
+        <span id="hud-progres" class="hud__progres">0 / 0</span>
+      </div>
+    </div>
+
+    {# Ecran d'accueil / garage #}
+    <section class="voile voile--accueil" id="voile-accueil">
+      <h1 class="titre">{{ SITE_NAME }}</h1>
+      <p class="sous-titre">{{ SITE_TAGLINE }}</p>
+      <div class="garage" id="garage" aria-label="Garage"></div>
+      <p class="garage__legende" id="garage-legende"></p>
+      <div class="boutons">
+        <button class="bouton bouton--principal" id="bouton-jouer" type="button">Jouer</button>
+        <button class="bouton" id="bouton-scores" type="button">Meilleurs scores</button>
+      </div>
+      <p class="aide">
+        <kbd>Espace</kbd> ou <kbd>↑</kbd> ou <strong>toucher</strong> : sauter ·
+        <kbd>W</kbd>/<kbd>S</kbd> ou <strong>glisser</strong> : changer de voie ·
+        <kbd>M</kbd> : son
+      </p>
+    </section>
+
+    {# Fin de niveau #}
+    <section class="voile" id="voile-niveau" hidden>
+      <h2 class="titre titre--petit" id="niveau-titre">Niveau terminé!</h2>
+      <p class="sous-titre" id="niveau-message"></p>
+      <div class="boutons">
+        <button class="bouton bouton--principal" id="bouton-suivant" type="button">Niveau suivant</button>
+        <button class="bouton" id="bouton-garage" type="button">Garage</button>
+      </div>
+    </section>
+
+    {# Accident #}
+    <section class="voile" id="voile-fin" hidden>
+      <h2 class="titre titre--petit">Bang!</h2>
+      <p class="sous-titre" id="fin-message"></p>
+      <form class="score-form" id="score-form">
+        <label for="pseudo">Ton nom pour le tableau</label>
+        <div class="score-form__ligne">
+          <input id="pseudo" name="pseudo" maxlength="16" autocomplete="nickname"
+                 placeholder="Ton pseudo">
+          <button class="bouton" type="submit">Envoyer</button>
+        </div>
+        <p class="score-form__etat" id="score-etat"></p>
+      </form>
+      <div class="boutons">
+        <button class="bouton bouton--principal" id="bouton-rejouer" type="button">Réessayer</button>
+        <button class="bouton" id="bouton-garage-fin" type="button">Garage</button>
+      </div>
+    </section>
+
+    {# Tableau des scores #}
+    <section class="voile" id="voile-scores" hidden>
+      <h2 class="titre titre--petit">Meilleurs scores</h2>
+      <ol class="scores" id="liste-scores"></ol>
+      <div class="boutons">
+        <button class="bouton bouton--principal" id="bouton-fermer-scores" type="button">Retour</button>
+      </div>
+    </section>
+
+    {# Pause #}
+    <section class="voile" id="voile-pause" hidden>
+      <h2 class="titre titre--petit">Pause</h2>
+      <div class="boutons">
+        <button class="bouton bouton--principal" id="bouton-reprendre" type="button">Reprendre</button>
+        <button class="bouton" id="bouton-abandonner" type="button">Garage</button>
+      </div>
+    </section>
+
+    <button class="bouton-pause" id="bouton-pause" type="button" aria-label="Pause" hidden>❚❚</button>
+  </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/jeu.js') }}?v={{ version }}"></script>
+{% endblock %}

@@ -1,0 +1,24 @@
+; Copier vers /etc/systemd/system/auto-gestiondojo.service puis :
+;   sudo systemctl daemon-reload
+;   sudo systemctl enable --now auto-gestiondojo
+;
+; Jumeau du service jeux-gestiondojo, avec son propre dossier et son port.
+
+[Unit]
+Description=Gunicorn pour Auto Évasion (auto.gestiondojo.ca)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/srv/auto/current
+; Le .env vit HORS du dossier de release : une nouvelle version ne doit jamais
+; ecraser la configuration du serveur.
+EnvironmentFile=/srv/auto/shared/.env
+ExecStart=/srv/auto/current/.venv/bin/gunicorn --config /srv/auto/current/deploy/gunicorn.conf.py run:app
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

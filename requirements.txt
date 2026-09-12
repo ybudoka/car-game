@@ -1,0 +1,5 @@
+# ⚠️ Doit rester synchronise avec la section [project].dependencies de
+# pyproject.toml : c'est CE fichier que le deploiement installe.
+flask>=3.1.0
+gunicorn>=23.0.0
+python-dotenv>=1.0.0

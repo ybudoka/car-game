@@ -1,0 +1,32 @@
+[project]
+name = "auto-evasion"
+version = "0.1.0"
+description = "Auto Évasion — jeu de course et de sauts en auto, jouable dans le navigateur"
+readme = "README.md"
+# Le serveur de gestiondojo.ca tourne en 3.14 ; le plancher reste bas pour que
+# n'importe quel poste puisse lancer le jeu en local.
+requires-python = ">=3.11"
+# ⚠️ Doit rester synchronise avec `requirements.txt` : le deploiement installe
+# depuis requirements.txt (deploy/deploy.sh), la CI et le venv local passent
+# par ce fichier. `scripts/verifier_dependances.py` compare les deux.
+dependencies = [
+    "flask>=3.1.0",
+    "gunicorn>=23.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
